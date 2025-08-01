@@ -609,12 +609,15 @@
             .panel { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 85vw; }
         }
         
-        @media (max-width: 480px) {
+       @media (max-width: 480px) {
             .betting-controls {
                 padding: 15px;
             }
             .game-board {
-                padding: 15px;
+                padding: 10px; /* Reduced padding */
+            }
+            .grid {
+                gap: 3px; /* Tighter grid gap */
             }
             .navbar-right {
                 gap: 15px;
