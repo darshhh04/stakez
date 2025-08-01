@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stakez-like Game</title>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" xintegrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ==========================================================================
+           Global Styles & Variables
+           ========================================================================== */
+        :root {
+            --bg-dark-primary: #0f212e;
+            --bg-dark-secondary: #1a2c38;
+            --bg-dark-tertiary: #213743;
+            --bg-dark-quaternary: #2f4553;
+            --text-primary: #ffffff;
+            --text-secondary: #b1bad3;
+            --accent-green: #00e701;
+            --accent-blue: #0066cc;
+            --border-color: #334155;
+            --font-family: "Poppins", sans-serif;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family);
+            margin: 0;
+            background-color: var(--bg-dark-primary);
+            color: var(--text-primary);
+            overflow: hidden; /* Prevent scrollbars from layout shifts */
+        }
+
+        /* ==========================================================================
+           Navbar
+           ========================================================================== */
+        .navbar {
+            width: 100%;
+            height: 70px;
+            background-color: var(--bg-dark-secondary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            border-bottom: 1px solid var(--border-color);
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        .navbar-left, .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .navbar-center {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .menu-button {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 24px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        .menu-button:hover {
+            color: var(--text-primary);
+        }
+
+        .stake-logo {
+            height: 35px;
+            filter: brightness(0) invert(1);
+            cursor: pointer;
+        }
+
+        .wallet-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background-color: var(--bg-dark-primary);
+            padding: 5px;
+            border-radius: 9999px;
+            border: 1px solid var(--border-color);
+        }
+
+        #balance-display {
+            padding: 5px 15px;
+            font-weight: 600;
+        }
+
+        .wallet-button {
+            background-color: var(--accent-blue);
+            color: var(--text-primary);
+            border: none;
+            padding: 8px 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 9999px;
+            transition: background-color 0.3s;
+        }
+        .wallet-button:hover {
+            background-color: #007bff;
+        }
+
+        .icon-group {
+            display: flex;
+            gap: 25px;
+            font-size: 18px;
+        }
+        .icon-group i {
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: color 0.3s;
+        }
+        .icon-group i:hover {
+            color: var(--text-primary);
+        }
+
+        /* ==========================================================================
+           Dropdown Panels
+           ========================================================================== */
+        .panel {
+            display: none;
+            position: absolute;
+            background-color: var(--bg-dark-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            z-index: 1001;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            color: var(--text-secondary);
+            width: 300px;
+        }
+        
+        .user-panel, .notification-panel, .contact-panel {
+             animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-panel { top: 65px; right: 80px; }
+        .notification-panel { top: 65px; right: 50px; }
+        .contact-panel { top: 65px; right: 20px; }
+        .wallet-panel { top: 65px; left: 50%; transform: translateX(-50%); width: 340px; }
+
+        .panel-header {
+            color: var(--text-primary);
+            font-weight: 600;
+            margin: 0 0 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .panel a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: color 0.3s;
+            padding: 10px;
+            border-radius: 9999px;
+        }
+        .panel a:hover {
+            background-color: var(--bg-dark-quaternary);
+            color: var(--text-primary);
+        }
+        
+        .panel-button {
+            background-color: var(--accent-blue);
+            color: var(--text-primary);
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 9999px;
+            transition: background-color 0.3s;
+            width: 100%;
+            margin-top: 15px;
+        }
+        .panel-button:hover {
+            background-color: #007bff;
+        }
+        
+        .wallet-tabs {
+            display: flex;
+            background-color: var(--bg-dark-primary);
+            border-radius: 9999px;
+            padding: 5px;
+            margin-bottom: 20px;
+        }
+        .wallet-tab {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background-color: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-weight: 600;
+            border-radius: 9999px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .wallet-tab.active {
+            background-color: var(--bg-dark-quaternary);
+            color: var(--text-primary);
+        }
+        
+        .transaction-form input {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: var(--bg-dark-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 9999px;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+        
+        .hidden { display: none !important; }
+
+        /* ==========================================================================
+           Main Layout & Sidebar
+           ========================================================================== */
+        .container {
+            display: flex;
+            margin-top: 70px;
+            height: calc(100vh - 70px);
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: var(--bg-dark-primary);
+            padding: 10px;
+            overflow-y: auto;
+            flex-shrink: 0;
+            border-right: 1px solid var(--border-color);
+            transition: margin-left 0.3s ease;
+        }
+
+        .sidebar.collapsed {
+            margin-left: -250px;
+        }
+
+        .sidebar-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 10px 0;
+            background-color: var(--bg-dark-secondary);
+            border-radius: 10px;
+        }
+        .sidebar-list li a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            transition: background-color 0.2s, color 0.2s;
+            border-radius: 9999px;
+        }
+        .sidebar-list li a:hover {
+            background-color: var(--bg-dark-tertiary);
+            color: var(--text-primary);
+        }
+        .sidebar-list li a i {
+            margin-right: 15px;
+            width: 20px;
+            text-align: center;
+        }
+        .sidebar-list li a.list-header {
+            color: var(--text-primary);
+            font-weight: 600;
+            pointer-events: none;
+        }
+
+        /* ==========================================================================
+           Mines Game Layout
+           ========================================================================== */
+        .game-container {
+            display: flex;
+            flex-grow: 1;
+            background-color: var(--bg-dark-secondary);
+        }
+
+        .betting-controls {
+            width: 300px;
+            background-color: var(--bg-dark-tertiary);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            flex-shrink: 0;
+            overflow-y: auto;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .control-group label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-left: 5px;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            background-color: var(--bg-dark-primary);
+            border-radius: 9999px;
+            padding: 0 5px 0 15px;
+            border: 1px solid var(--border-color);
+        }
+        .input-group .fa-bitcoin {
+            color: #f7931a;
+        }
+        .input-group input, #mines-select {
+            flex-grow: 1;
+            padding: 12px 5px;
+            border: none;
+            background-color: transparent;
+            color: var(--text-primary);
+            outline: none;
+            font-size: 14px;
+            min-width: 50px;
+        }
+        #mines-select {
+            -webkit-appearance: none; 
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23b1bad3' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1em;
+            padding-right: 2.5rem;
+        }
+        #mines-select option {
+            background-color: var(--bg-dark-tertiary);
+            color: var(--text-primary);
+        }
+
+        .multiplier-buttons {
+            display: flex;
+            gap: 5px;
+            flex-shrink: 0;
+        }
+        .bet-multiplier {
+            background-color: var(--bg-dark-quaternary);
+            color: var(--text-primary);
+            border: none;
+            padding: 6px 12px;
+            cursor: pointer;
+            font-size: 14px;
+            border-radius: 9999px;
+            transition: background-color 0.3s;
+        }
+        .bet-multiplier:hover {
+            background-color: var(--accent-blue);
+        }
+
+        .bet-button {
+            background-color: var(--accent-green);
+            color: #000;
+            border: none;
+            padding: 15px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 9999px;
+            transition: background-color 0.3s;
+        }
+        .bet-button:hover {
+            background-color: #2cff2d;
+        }
+        
+        .settings-button {
+             background-color: var(--bg-dark-quaternary);
+             color: var(--text-primary);
+        }
+        .settings-button:hover {
+            background-color: var(--bg-dark-quaternary);
+            filter: brightness(1.2);
+        }
+        .settings-button .fa-cog {
+            margin-right: 8px;
+        }
+
+        #profit-display {
+            padding: 15px;
+            border-radius: 9999px;
+            background-color: var(--bg-dark-primary);
+            color: var(--text-primary);
+            text-align: center;
+            font-weight: 600;
+            border: 1px solid var(--border-color);
+        }
+
+        .game-board {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--bg-dark-primary);
+            padding: 40px;
+            overflow: hidden;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            grid-template-rows: repeat(5, 1fr);
+            gap: 10px;
+            width: 100%;
+            max-width: 600px;
+            aspect-ratio: 1 / 1;
+        }
+
+        .cell {
+            background-color: var(--bg-dark-quaternary);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transform-style: preserve-3d;
+        }
+        .cell:hover {
+            filter: brightness(1.2);
+            transform: scale(1.05);
+        }
+        .cell img {
+            width: 60%;
+            height: 60%;
+            object-fit: contain;
+            animation: popIn 0.3s ease-out;
+        }
+        @keyframes popIn {
+            from { transform: scale(0.5); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .betting-controls.disabled {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        .betting-controls.disabled #cashout-btn, .betting-controls.disabled #profit-display {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        /* ==========================================================================
+           Modal / Popup Styles
+           ========================================================================== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .modal-content {
+            background-color: var(--bg-dark-tertiary);
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            animation: popIn 0.3s ease-out;
+        }
+        
+        .modal-content h2 {
+            margin-top: 0;
+            color: var(--text-primary);
+        }
+        .modal-content p {
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin: 10px 0 20px;
+        }
+        .modal-content .win { color: var(--accent-green); font-weight: 700; }
+        .modal-content .loss { color: var(--accent-red); font-weight: 700; }
+        
+        .modal-close-btn {
+            background-color: var(--accent-blue);
+            color: var(--text-primary);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 9999px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+        .modal-close-btn:hover { background-color: #007bff; }
+        
+        .settings-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            text-align: left;
+            margin-top: 20px;
+        }
+        .settings-options label {
+            background-color: var(--bg-dark-primary);
+            padding: 15px;
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            transition: border-color 0.3s, color 0.3s;
+        }
+        .settings-options label:hover {
+            border-color: var(--accent-blue);
+        }
+        .settings-options input {
+            display: none;
+        }
+        .settings-options input:checked + span {
+            color: var(--text-primary);
+        }
+        .settings-options input:checked + span::before {
+            border-color: var(--accent-blue);
+            background-color: var(--accent-blue);
+        }
+        .settings-options span {
+            display: flex;
+            align-items: center;
+            color: var(--text-secondary);
+        }
+        .settings-options span::before {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid var(--border-color);
+            margin-right: 15px;
+            transition: all 0.3s;
+        }
+
+        /* ==========================================================================
+           Responsiveness
+           ========================================================================== */
+        @media (max-width: 992px) {
+            .navbar-center { display: none; }
+            .navbar { justify-content: space-between; }
+        }
+
+        @media (max-width: 768px) {
+            .navbar { flex-direction: row; height: 70px; }
+            .navbar-center { display: none; }
+            .container { flex-direction: column; margin-top: 70px; height: auto; }
+            .sidebar {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                height: calc(100vh - 70px);
+                z-index: 900;
+                margin-left: -250px; /* Initially hidden */
+            }
+            .sidebar.collapsed {
+                margin-left: 0; /* Shown */
+            }
+            .game-container { flex-direction: column; }
+            .betting-controls { width: 100%; border-bottom: 1px solid var(--border-color); }
+            .game-board { padding: 20px; }
+            .grid { gap: 5px; }
+            .panel { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 85vw; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-left">
+            <button class="menu-button">☰</button>
+            <a href="index.html"><img src="ASSETS/stake.png" alt="Stake" class="stake-logo"></a>
+        </div>
+        <div class="navbar-center">
+             <div class="wallet-container">
+                <div id="balance-display">
+                    <span id="balance">₹0.00</span>
+                </div>
+                <button class="wallet-button" id="wallet-btn">Wallet</button>
+            </div>
+        </div>
+        <div class="navbar-right">
+            <div class="icon-group">
+                <i class="fa-solid fa-user" id="user-btn"></i>
+                <i class="fa-solid fa-bell" id="bell-btn"></i>
+                <i class="fa-solid fa-envelope" id="envelope-btn"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dropdown Panels -->
+    <div class="user-panel panel" id="myPanel">
+        <p class="panel-header"><i class="fa-solid fa-circle-user"></i>ADMIN</p>
+        <a href="https://www.linkedin.com/in/darshan-bhatarkar-320ab3314/" target="_blank">Visit Profile<i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+        <button id="contact-me-btn" class="panel-button">Contact Me</button>
+    </div>
+    <div class="notification-panel panel" id="notificationPanel">
+        <p class="panel-header"><i class="fa-regular fa-bell"></i>NOTIFICATIONS</p>
+        <span><i class="fa-regular fa-bell-slash"></i>No new notifications</span>
+    </div>
+    <div class="contact-panel panel" id="contactPanel">
+        <p class="panel-header"><i class="fa-regular fa-envelope"></i>ADMIN'S EMAIL</p>
+        <a href="mailto:darshanbhatarkar04@gmail.com" target="_blank">darshanbhatarkar04@gmail.com</a>
+        <button id="mail-me-btn" class="panel-button">Mail Me</button>
+    </div>
+    <div class="wallet-panel panel" id="walletPanel">
+        <div class="wallet-tabs">
+            <button class="wallet-tab active" data-tab="deposit">DEPOSIT</button>
+            <button class="wallet-tab" data-tab="withdraw">WITHDRAW</button>
+        </div>
+        <div id="deposit-form" class="transaction-form">
+            <input type="number" id="deposit-amount-input" placeholder="Enter deposit amount" />
+            <button id="deposit-submit-btn" class="panel-button">DEPOSIT</button>
+        </div>
+        <div id="withdraw-form" class="transaction-form hidden">
+            <input type="number" id="withdraw-amount-input" placeholder="Enter withdraw amount" />
+            <button id="withdraw-submit-btn" class="panel-button">WITHDRAW</button>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="container">
+        <aside class="sidebar">
+            <ul class="sidebar-list">
+                <li><a href="#"><i class="fa fa-star"></i> Favourites</a></li>
+                <li><a href="#"><i class="fa fa-clock"></i> Recent</a></li>
+                <li><a href="#"><i class="fa-brands fa-odysee"></i> Challenges</a></li>
+                <li><a href="#"><i class="fa fa-list"></i> My Bets</a></li>
+            </ul>
+            <ul class="sidebar-list">
+                <li><a href="#" class="list-header">Games</a></li>
+                <li><a href="#"><i class="fa fa-diamond"></i> Stakez Originals</a></li>
+                <li><a href="#"><i class="fa fa-gift"></i> Stakez Exclusives</a></li>
+                <li><a href="#"><i class="fa fa-sliders"></i> Slots</a></li>
+                <li><a href="#"><i class="fa fa-play-circle"></i> Live Casino</a></li>
+                <li><a href="#"><i class="fa-solid fa-mobile-screen"></i> Game Shows</a></li>
+                <li><a href="#"><i class="fa fa-bolt"></i> New Releases</a></li>
+                <li><a href="#"><i class="fa fa-solid fa-coins"></i> Stakez Poker</a></li>
+                <li><a href="#"><i class="fa fa-bullseye"></i> Bonus Buy</a></li>
+                <li><a href="#"><i class="fa fa-percent"></i> Enhanced RTP</a></li>
+                <li><a href="#"><i class="fa fa-table"></i> Table Games</a></li>
+            </ul>
+        </aside>
+        <div class="game-container">
+            <div class="betting-controls">
+                <div class="control-group">
+                    <label for="bet-amount-input">Bet Amount</label>
+                    <div class="input-group">
+                        <i class="fa-brands fa-bitcoin"></i>
+                        <input type="text" id="bet-amount-input" placeholder="0.00" autocomplete="off">
+                        <div class="multiplier-buttons">
+                            <button class="bet-multiplier" id="half-btn">½</button>
+                            <button class="bet-multiplier" id="double-btn">2×</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label for="mines-select">Mines</label>
+                    <div class="input-group">
+                        <select id="mines-select">
+                            <option value="1">1</option><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option>
+                        </select>
+                    </div>
+                </div>
+                <button id="bet-button" class="bet-button">Bet</button>
+                <div id="profit-display" class="hidden">Profit: 0.00</div>
+                <button id="cashout-btn" class="bet-button hidden">Cash Out</button>
+                <button id="game-settings-btn" class="bet-button settings-button"><i class="fa-solid fa-cog"></i>Game Settings</button>
+            </div>
+            <div class="game-board">
+                <div class="grid">
+                    <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+                    <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+                    <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+                    <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+                    <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Game Settings Modal -->
+    <div id="settings-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h2>Game Settings</h2>
+            <div class="settings-options">
+                <label>
+                    <input type="radio" name="gameMode" value="random" checked>
+                    <span>Random</span>
+                </label>
+                <label>
+                    <input type="radio" name="gameMode" value="rigWin">
+                    <span>Rig Win</span>
+                </label>
+                <label>
+                    <input type="radio" name="gameMode" value="rigLoss">
+                    <span>Rig Loss</span>
+                </label>
+            </div>
+            <button id="settings-close-btn" class="modal-close-btn">Save & Close</button>
+        </div>
+    </div>
+
+    <!-- Game Result Modal -->
+    <div id="result-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h2 id="result-title"></h2>
+            <p id="result-message"></p>
+            <button id="result-close-btn" class="modal-close-btn">OK</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
