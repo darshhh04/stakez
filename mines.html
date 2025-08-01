@@ -36,7 +36,7 @@
             margin: 0;
             background-color: var(--bg-dark-primary);
             color: var(--text-primary);
-            overflow: hidden; /* Prevent scrollbars from layout shifts */
+            overflow-x: hidden; /* Prevent scrollbars from layout shifts */
         }
 
         /* ==========================================================================
@@ -610,14 +610,11 @@
         }
         
        @media (max-width: 480px) {
-            body{
-                overflow: auto; /* Allow scrolling on small screens */
-            }
             .betting-controls {
-                padding: 5px;
+                padding: 15px;
             }
             .game-board {
-                padding: 5px; /* Reduced padding */
+                padding: 10px; /* Reduced padding */
             }
             .grid {
                 gap: 3px; /* Tighter grid gap */
@@ -626,7 +623,7 @@
                 gap: 15px;
             }
             .icon-group {
-                gap: 5px;
+                gap: 15px;
             }
             .wallet-panel {
                 width: 90vw;
