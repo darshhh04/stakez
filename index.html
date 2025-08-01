@@ -365,13 +365,20 @@
            Responsiveness
            ========================================================================== */
         @media (max-width: 992px) {
-            .navbar-center { display: none; }
-            .navbar { justify-content: space-between; }
+            .navbar-center {
+                position: static;
+                transform: none;
+                order: 3; /* Move to the end */
+            }
+            .navbar-right {
+                order: 2;
+            }
+             .navbar {
+                justify-content: space-between;
+            }
         }
 
         @media (max-width: 768px) {
-            .navbar { flex-direction: row; height: 70px; }
-            .navbar-center { display: none; }
             .container { margin-top: 70px; }
             .sidebar {
                 position: fixed;
@@ -385,6 +392,27 @@
                 margin-left: 0; /* Shown */
             }
             .panel { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 85vw; }
+        }
+        
+        @media (max-width: 480px) {
+            .main-content {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+                gap: 10px;
+                padding: 10px;
+            }
+            .game-card {
+                height: 150px;
+            }
+            .game-card p {
+                font-size: 14px;
+                padding: 15px 10px;
+            }
+            .navbar-right {
+                gap: 15px;
+            }
+            .icon-group {
+                gap: 15px;
+            }
         }
     </style>
 </head>
