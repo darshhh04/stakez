@@ -1,0 +1,32 @@
+# Stakez – Gambling Awareness Simulator
+
+A simulation web app inspired by Stake.com that educates users on how gambling platforms can manipulate outcomes. Includes a rig-toggle feature to demonstrate the difference between fair and biased play.
+
+## 🌐 Live Demo
+[Try Stakez](https://stakez.netlify.app/)
+
+
+## 🎮 Features
+- Inspired by popular gambling interfaces
+- Toggle between **fair** and **rigged** outcomes
+- Real-time display of game results and win/loss feedback
+- Educational aim: exposes manipulation techniques in online gambling
+- Lightweight, responsive, and fast
+
+## 🛠️ Tech Stack
+- HTML5
+- CSS3
+- JavaScript (Vanilla)
+
+## 🧠 Learning Outcomes
+- DOM manipulation and event-driven design
+- Probability simulation in JavaScript
+- UI/UX for educational simulations
+
+## 📦 Installation (for local use)
+1. Clone the repository  
+   `git clone https://github.com/darshanbhatarkar/stakez.git`
+2. Open `index.html` in your browser
+
+## 📄 License
+This project is for awareness and educational demonstration only. Not intended for real gambling use.
