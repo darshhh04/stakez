@@ -100,7 +100,7 @@ sidebar?.addEventListener('click', (event) => {
 });
 
 
-// DEPOSIT & WITHDRAWAL (NEW LOGIC)
+// DEPOSIT & WITHDRAWAL 
 const balanceDisplay = document.getElementById('balance');
 const walletTabs = document.querySelectorAll('.wallet-tab');
 const depositForm = document.getElementById('deposit-form');
