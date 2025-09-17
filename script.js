@@ -37,7 +37,7 @@ document.getElementById('wallet-btn')?.addEventListener('click', function() {
     displayWalletPanel = show(walletPanel, displayWalletPanel);
 });
 
-// New buttons in panels
+// btns in contact panel
 const contactMeBtn = document.getElementById('contact-me-btn');
 if(contactMeBtn) {
     contactMeBtn.addEventListener('click', () => {
@@ -84,7 +84,7 @@ document.addEventListener('click', function(event) {
     }
 });
 
-// Sidebar Toggle
+// Sidebar toggle btn
 const sidebar = document.querySelector('.sidebar');
 const menuButton = document.querySelector('.menu-button');
 
@@ -100,7 +100,7 @@ sidebar?.addEventListener('click', (event) => {
 });
 
 
-// DEPOSIT & WITHDRAWAL 
+// Depo and widrl logic
 const balanceDisplay = document.getElementById('balance');
 const walletTabs = document.querySelectorAll('.wallet-tab');
 const depositForm = document.getElementById('deposit-form');
@@ -164,10 +164,10 @@ withdrawSubmitBtn?.addEventListener('click', () => {
     withdrawAmountInput.value = '';
 });
 
-updateBalanceDisplay(); // Initial display update
+updateBalanceDisplay(); // Initial display bal
 
 
-//MINES GAME LOGIC
+//mines logic
 const betAmountInput = document.getElementById('bet-amount-input');
 const halfButton = document.getElementById('half-btn');
 const doubleButton = document.getElementById('double-btn');
@@ -179,7 +179,7 @@ const bettingControls = document.querySelector('.betting-controls');
 const profitDisplay = document.getElementById('profit-display');
 const cashoutButton = document.getElementById('cashout-btn');
 
-// Modal elements
+// Modal 
 const settingsModal = document.getElementById('settings-modal');
 const resultModal = document.getElementById('result-modal');
 const gameSettingsBtn = document.getElementById('game-settings-btn');
@@ -194,7 +194,7 @@ let revealedCount = 0;
 let gameActive = false;
 let betAmount = 0;
 let profit = 0;
-let gameMode = 'random'; // random, rigWin, rigLoss
+let gameMode = 'random'; // modes
 
 function updateBetAmountDisplay(amount) {
     if(betAmountInput) betAmountInput.value = amount.toFixed(2);
@@ -212,7 +212,7 @@ doubleButton?.addEventListener('click', function() {
     updateBetAmountDisplay(amount);
 });
 
-// Game Settings Modal Logic
+// Game Settings Logic
 gameSettingsBtn?.addEventListener('click', () => {
     settingsModal?.classList.remove('hidden');
 });
@@ -222,7 +222,7 @@ settingsCloseBtn?.addEventListener('click', () => {
     settingsModal?.classList.add('hidden');
 });
 
-// Result Modal Logic
+// Result Logic
 function showResultModal(title, message, isWin) {
     if(resultTitle) resultTitle.textContent = title;
     if(resultMessage) resultMessage.innerHTML = message;
@@ -307,7 +307,7 @@ function handleCellClick(event) {
     
     let isMine = cell.classList.contains('mine');
 
-    // Apply rig logic
+    //rig logic
     if (gameMode === 'rigWin') {
         if (cell.classList.contains('mine')) {
             const diamondCell = cells.find(c => c.classList.contains('diamond') && !c.classList.contains('revealed'));
@@ -343,7 +343,7 @@ function handleCellClick(event) {
     if (isMine) {
         cell.innerHTML = '<img src="ASSETS/mine.png" alt="mine">';
         cell.style.backgroundColor = 'var(--accent-red)';
-        endGame(false); // It's a loss
+        endGame(false); // loss
     } else {
         cell.innerHTML = '<img src="ASSETS/diamond.png" alt="diamond">';
         cell.style.backgroundColor = '#071824';
@@ -405,7 +405,7 @@ function calculateProfit() {
 
 function cashOut() {
     if (profit > 0) {
-        const totalWinnings = profit + betAmount; // Correctly include original bet
+        const totalWinnings = profit + betAmount; 
         balance += totalWinnings;
         updateBalanceDisplay();
         updateLocalStorage();
